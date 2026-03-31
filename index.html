@@ -259,6 +259,15 @@
     /* フッター */
     footer { text-align: center; padding: 20px; color: #bbb; font-size: 0.8rem; }
 
+    /* イベントピン（小さなドット）- 常に表示 */
+    .event-pins { display: flex; gap: 3px; margin-top: 3px; flex-wrap: wrap; }
+    .event-pin { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .event-pin.ev-pink   { background: #ff6b9d; }
+    .event-pin.ev-blue   { background: #4d96ff; }
+    .event-pin.ev-green  { background: #6bcb77; }
+    .event-pin.ev-orange { background: #ff9a3c; }
+    .event-pin.ev-purple { background: #c77dff; }
+
     /* レスポンシブ */
     @media (max-width: 600px) {
       header h1 { font-size: 1.7rem; }
@@ -683,6 +692,16 @@ function renderEventList() {
   const list = document.getElementById('event-list');
   const prefix = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-';
   const monthEvs = Object.entries(events).filter(([k]) => k.startsWith(prefix)).sort(([a],[b]) => a.localeCompare(b));
+    // イベントピン（小さな丸ドット）- PC・スマホ共通で表示
+    if (dayEvs.length) {
+      const pins = document.createElement('div'); pins.className = 'event-pins';
+      dayEvs.forEach(ev => {
+        const pin = document.createElement('div');
+        pin.className = 'event-pin ' + ev.color;
+        pins.appendChild(pin);
+      });
+      cell.appendChild(pins);
+    }
   if (!monthEvs.length) { list.innerHTML = '<div class="todo-empty">今月の予定はまだありません。カレンダーをクリックして追加しよう！</div>'; return; }
   list.innerHTML = '';
   monthEvs.forEach(([ds, evs]) => {
