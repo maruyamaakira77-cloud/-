@@ -588,8 +588,29 @@ function initCalendar() {
   const now = new Date();
   calYear = now.getFullYear();
   calMonth = now.getMonth();
-  // Firebase リアルタイム同期
-  fbOn('events', {}, val => { events = val; renderCalendar(); });
+  // ===== Googleカレンダーから同期した予定 (最終更新: 2026年4月1日) =====
+  const gcalEvents = {
+    "2026-04-25": [{ title: "歯科🦷", color: "ev-blue" }],
+    "2026-04-29": [{ title: "昭和の日 🊩", color: "ev-green" }],
+    "2026-05-03": [{ title: "憲法記念日 🊩", color: "ev-green" }],
+    "2026-05-04": [{ title: "みどりの日 🊩", color: "ev-green" }],
+    "2026-05-05": [{ title: "こどもの日 🊩", color: "ev-green" }],
+    "2026-05-06": [{ title: "憲法記念日 振替休日 🊩", color: "ev-green" }],
+    "2026-05-10": [{ title: "母の日 💐", color: "ev-pink" }]
+  };
+
+  // Firebase リアルタイム同期（Googleカレンダーとマージ）
+  fbOn('events', {}, val => {
+    events = {};
+    Object.entries(gcalEvents).forEach(([ds, evs]) => { events[ds] = evs.map(e => ({...e})); });
+    Object.entries(val || {}).forEach(([ds, evs]) => {
+      if (!events[ds]) events[ds] = [];
+      evs.forEach(ev => {
+        if (!events[ds].some(e => e.title === ev.title)) events[ds].push(ev);
+      });
+    });
+    renderCalendar();
+  });
 }
 function changeMonth(delta) {
   calMonth += delta;
