@@ -562,13 +562,13 @@
 //  console.firebase.google.com で取得した値を貼り付けてください
 // ============================================================
 const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyBgOLqJL3NX5ITQQmJubW6-YJ1xEGxS4XM",
+  authDomain:        "wagaya-hp.firebaseapp.com",
+  databaseURL:       "https://wagaya-hp-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "wagaya-hp",
+  storageBucket:     "wagaya-hp.firebasestorage.app",
+  messagingSenderId: "686073977550",
+  appId:             "1:686073977550:web:9f1361ff3ac80ae2708e9f"
 };
 // ============================================================
 
@@ -1291,7 +1291,10 @@ function renderTodos() {
 //  書類
 // ===================================================
 let docs = [];
-const DEFAULT_DOCS = [{ name: '資産運用方針', url: '資産運用方針.pdf', addedAt: '' }];
+const DEFAULT_DOCS = [
+  { name: '資産運用方針', url: '資産運用方針.pdf', addedAt: '' },
+  { name: '三田市ゴミの日', url: 'https://raw.githubusercontent.com/maruyamaakira77-cloud/-/main/%E4%B8%89%E7%94%B0%E5%B8%82%E3%82%B4%E3%83%9F%E3%81%AE%E6%97%A5.pdf', addedAt: '' },
+];
 
 function initDocs() {
   fbOn('docs', null, val => {
@@ -1394,15 +1397,11 @@ function renderDocs() {
 function openDoc(i) {
   const d = docs[i];
   if (!d) return;
-  openPdf(d.url, d.name);
+  window.open(d.url, '_blank', 'noopener');
 }
 
 function openPdf(url, label) {
-  document.getElementById('pdf-viewer-label').textContent = '📄 ' + label;
-  document.getElementById('pdf-iframe').src = url;
-  const area = document.getElementById('pdf-viewer-area');
-  area.style.display = 'block';
-  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  window.open(url, '_blank', 'noopener');
 }
 function closePdf() {
   document.getElementById('pdf-viewer-area').style.display = 'none';
