@@ -42,6 +42,8 @@
     header h1 { font-size: 2.4rem; color: #fff; text-shadow: 2px 3px 6px rgba(0,0,0,0.25); letter-spacing: 0.05em; }
     header p.subtitle { color: rgba(255,255,255,0.9); font-size: 1rem; margin-top: 6px; }
     .header-emojis { font-size: 2rem; margin-bottom: 8px; }
+    .header-cat { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid rgba(255,255,255,0.85); box-shadow: 0 4px 16px rgba(0,0,0,0.2); margin-bottom: 10px; }
+    @media (max-width: 600px) { .header-cat { width: 80px; height: 80px; } }
 
     /* ナビ */
     nav {
@@ -319,7 +321,7 @@
 <body>
 
 <header>
-  <div class="header-emojis">🏠 🌸 🌟 🎉</div>
+  <img src="cat.jpg" alt="うちの猫" class="header-cat" />
   <h1>わが家のホームページ</h1>
   <p class="subtitle">みんなで使おう！家族のポータルサイト</p>
 </header>
