@@ -84,6 +84,14 @@
     .doc-item .doc-meta { font-size: 0.8rem; color: #aaa; margin-top: 3px; }
     .doc-item .doc-btn { padding: 8px 18px; border: none; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; background: #e07b39; color: #fff; transition: 0.2s; white-space: nowrap; }
     .doc-item .doc-btn:hover { opacity: 0.85; }
+    .doc-item .doc-del { padding: 8px 12px; border: none; border-radius: 50px; font-size: 0.85rem; cursor: pointer; background: #fff0eb; color: #e07b39; transition: 0.2s; white-space: nowrap; }
+    .doc-item .doc-del:hover { background: #ffd5bb; }
+    .doc-add-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; background: #fff8f2; border-radius: 14px; padding: 14px 16px; }
+    .doc-add-form input[type="text"] { flex: 1; min-width: 160px; border: 2px solid #ddd; border-radius: 50px; padding: 9px 16px; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; background: #fff; }
+    .doc-add-form input[type="text"]:focus { border-color: #e07b39; }
+    .doc-upload-label { padding: 9px 18px; background: #e07b39; color: #fff; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .doc-upload-label:hover { opacity: 0.85; }
+    .doc-add-status { font-size: 0.85rem; color: #888; width: 100%; min-height: 1.2em; }
     .pdf-viewer-wrap { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.12); background: #555; }
     .pdf-viewer-wrap iframe { display: block; width: 100%; height: 75vh; border: none; }
     .pdf-viewer-title { font-size: 1rem; font-weight: bold; color: #555; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -150,6 +158,13 @@
     .year-folder-tab:hover { border-color: var(--pink); color: var(--pink); background: #fff0f8; }
     .year-folder-tab.active { border-color: var(--pink); background: var(--pink); color: #fff; }
     .year-folder-tab.active .yt-count { color: rgba(255,255,255,0.8); }
+    .year-folder-tab { position: relative; }
+    .yt-actions { display: none; position: absolute; top: 3px; right: 3px; gap: 2px; }
+    .year-folder-tab:hover .yt-actions { display: flex; }
+    .yt-act-btn { background: rgba(255,255,255,0.92); border: none; border-radius: 4px; padding: 1px 4px; cursor: pointer; font-size: 0.65rem; line-height: 1.4; }
+    .yt-act-btn:hover { background: #fff; }
+    .yt-add-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 14px; border-radius: 14px; border: 2px dashed #ddd; background: #fafafa; cursor: pointer; font-size: 0.82rem; color: #aaa; transition: 0.2s; min-width: 64px; }
+    .yt-add-btn:hover { border-color: var(--pink); color: var(--pink); background: #fff0f8; }
     .photo-add-controls { background: #fff8fb; border-radius: 16px; padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 10px; }
     .photo-year-select-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .photo-year-select-row label { font-size: 0.85rem; color: #888; font-weight: bold; white-space: nowrap; }
@@ -229,7 +244,18 @@
     .message-card .mc-time { font-size: 0.75rem; color: #aaa; margin-top: 6px; }
     .message-card .mc-del { position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 1rem; cursor: pointer; opacity: 0.4; }
     .message-card .mc-del:hover { opacity: 1; }
+    .message-card .mc-route { font-size: 0.8rem; font-weight: bold; margin-bottom: 4px; opacity: 0.75; }
     .msg-empty { text-align: center; color: #bbb; padding: 20px; }
+    .mc-likes { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; align-items: center; }
+    .mc-like-btn { display: flex; align-items: center; gap: 4px; font-size: 0.82rem; padding: 3px 10px 3px 6px; border-radius: 6px; border: 1.5px solid #bbb; background: rgba(255,255,255,0.8); cursor: pointer; transition: 0.15s; color: #666; }
+    .mc-like-btn .mc-cb { width: 15px; height: 15px; border: 1.5px solid #bbb; border-radius: 3px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; background: #fff; flex-shrink: 0; }
+    .mc-like-btn.liked { border-color: #4d96ff; color: #1a5aad; }
+    .mc-like-btn.liked .mc-cb { border-color: #4d96ff; background: #4d96ff; color: #fff; }
+    .mc-like-btn:hover { border-color: #4d96ff; color: #1a5aad; }
+    .msg-selects { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .msg-selects select { border: 2px solid #ddd; border-radius: 12px; padding: 8px 12px; font-family: inherit; font-size: 0.95rem; outline: none; background: #fff; cursor: pointer; transition: 0.2s; }
+    .msg-selects select:focus { border-color: var(--green); }
+    .msg-selects .msg-arrow { font-size: 1.2rem; color: #999; }
 
     /* Todo */
     .todo-form { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -337,14 +363,7 @@
       <div class="photo-add-controls">
         <div class="photo-year-select-row">
           <label>📂 追加先フォルダ：</label>
-          <select id="photo-year-select">
-            <option value="all">すべて</option>
-            <option value="2004">📁 2004年</option>
-            <option value="2005">📁 2005年</option>
-            <option value="2006">📁 2006年</option>
-            <option value="2007">📁 2007年</option>
-            <option value="2008">📁 2008年</option>
-          </select>
+          <select id="photo-year-select"></select>
         </div>
         <label class="photo-upload-area" for="photo-input">
           <div style="font-size:2rem;margin-bottom:6px;">📷</div>
@@ -405,14 +424,19 @@
       <h2>💬 メッセージボード</h2>
       <div class="msg-form">
         <div class="msg-row">
-          <input type="text" id="msg-name" placeholder="名前（例：ママ）" maxlength="20" />
-          <div class="msg-color-pick">
-            <span>色：</span>
-            <div class="color-swatch selected" data-color="msg-pink"   style="background:#ffe0ee" onclick="selectMsgColor(this)"></div>
-            <div class="color-swatch"          data-color="msg-blue"   style="background:#dceeff" onclick="selectMsgColor(this)"></div>
-            <div class="color-swatch"          data-color="msg-green"  style="background:#d7f5dc" onclick="selectMsgColor(this)"></div>
-            <div class="color-swatch"          data-color="msg-orange" style="background:#ffecd4" onclick="selectMsgColor(this)"></div>
-            <div class="color-swatch"          data-color="msg-purple" style="background:#eedff7" onclick="selectMsgColor(this)"></div>
+          <div class="msg-selects">
+            <select id="msg-from">
+              <option value="ママ">ママ</option>
+              <option value="パパ">パパ</option>
+              <option value="リホ">リホ</option>
+            </select>
+            <span class="msg-arrow">→</span>
+            <select id="msg-to">
+              <option value="家族">家族</option>
+              <option value="ママ">ママ</option>
+              <option value="パパ">パパ</option>
+              <option value="リホ">リホ</option>
+            </select>
           </div>
         </div>
         <textarea id="msg-text" placeholder="メッセージを書こう！" maxlength="200"></textarea>
@@ -453,19 +477,18 @@
   <section id="tab-docs" class="tab-section">
     <div class="card">
       <h2>📄 書類・PDF</h2>
-      <div class="docs-list" id="docs-list">
 
-        <!-- 資産運用方針.pdf -->
-        <div class="doc-item">
-          <div class="doc-icon">📋</div>
-          <div class="doc-info">
-            <div class="doc-name">資産運用方針</div>
-            <div class="doc-meta">PDF・18ページ</div>
-          </div>
-          <button class="doc-btn" onclick="openPdf('資産運用方針.pdf','資産運用方針')">📖 開く</button>
-        </div>
-
+      <!-- アップロードフォーム -->
+      <div class="doc-add-form">
+        <input type="text" id="doc-name-input" placeholder="書類名（例：保険証書）" maxlength="40" />
+        <label class="doc-upload-label" for="doc-pdf-input">
+          📎 PDFを追加
+          <input type="file" id="doc-pdf-input" accept=".pdf,application/pdf" style="display:none" onchange="addDoc(event)" />
+        </label>
+        <div class="doc-add-status" id="doc-add-status"></div>
       </div>
+
+      <div class="docs-list" id="docs-list"></div>
 
       <!-- PDFビューア（クリックで展開） -->
       <div id="pdf-viewer-area" style="display:none;">
@@ -736,25 +759,90 @@ function renderEventList() {
 // ===================================================
 //  写真（年フォルダ付き・Canvas圧縮＋LocalStorage永続保存）
 // ===================================================
-const PHOTO_YEARS = ['all', '2004', '2005', '2006', '2007', '2008'];
-const YEAR_ICONS  = { all:'🗂', '2004':'📁', '2005':'📁', '2006':'📁', '2007':'📁', '2008':'📁' };
-const YEAR_LABELS = { all:'すべて', '2004':'2004年', '2005':'2005年', '2006':'2006年', '2007':'2007年', '2008':'2008年' };
-
-let photosByYear = { all:[], '2004':[], '2005':[], '2006':[], '2007':[], '2008':[] };
+let photoFolders = []; // [{id, label}] ※'all'は含まない
+let photosByYear = {};
 let currentPhotoYear = 'all';
 let lightboxIndex = 0;
 
-// Firebase から写真をリアルタイム同期
+const DEFAULT_PHOTO_FOLDERS = [
+  {id:'2004', label:'2004年'}, {id:'2005', label:'2005年'}, {id:'2006', label:'2006年'},
+  {id:'2007', label:'2007年'}, {id:'2008', label:'2008年'},
+];
+
 function initPhotos() {
-  fbOn('photos', { all:[], '2004':[], '2005':[], '2006':[], '2007':[], '2008':[] }, val => {
-    photosByYear = val;
+  fbOn('photo_folders', null, val => {
+    if (val) {
+      photoFolders = Array.isArray(val) ? val : Object.values(val);
+    } else {
+      photoFolders = DEFAULT_PHOTO_FOLDERS.map(f => ({...f}));
+    }
+    renderYearTabs();
+    renderPhotoYearSelect();
+    renderPhotos();
+  });
+  fbOn('photos', {}, val => {
+    photosByYear = val || {};
     renderYearTabs();
     renderPhotos();
   });
 }
 
+function saveFolders() { fbSet('photo_folders', photoFolders); }
+
+function addPhotoFolder() {
+  const label = prompt('新しいフォルダ名を入力してください（例：2024年夏）');
+  if (!label || !label.trim()) return;
+  photoFolders.push({ id: 'f' + Date.now(), label: label.trim() });
+  saveFolders();
+  renderYearTabs();
+  renderPhotoYearSelect();
+}
+
+function renamePhotoFolder(id, e) {
+  e.stopPropagation();
+  const folder = photoFolders.find(f => f.id === id);
+  if (!folder) return;
+  const newLabel = prompt('新しいフォルダ名を入力してください', folder.label);
+  if (!newLabel || !newLabel.trim()) return;
+  folder.label = newLabel.trim();
+  saveFolders();
+  renderYearTabs();
+  renderPhotoYearSelect();
+}
+
+function deletePhotoFolder(id, e) {
+  e.stopPropagation();
+  const folder = photoFolders.find(f => f.id === id);
+  if (!folder) return;
+  const count = (photosByYear[id] || []).length;
+  if (count > 0) {
+    alert('「' + folder.label + '」に写真が' + count + '枚あります。先に写真を削除してからフォルダを削除してください。');
+    return;
+  }
+  if (!confirm('「' + folder.label + '」を削除しますか？')) return;
+  photoFolders = photoFolders.filter(f => f.id !== id);
+  saveFolders();
+  if (currentPhotoYear === id) currentPhotoYear = 'all';
+  renderYearTabs();
+  renderPhotoYearSelect();
+  renderPhotos();
+}
+
+function renderPhotoYearSelect() {
+  const sel = document.getElementById('photo-year-select');
+  const cur = sel.value;
+  sel.innerHTML = '';
+  photoFolders.forEach(f => {
+    const opt = document.createElement('option');
+    opt.value = f.id;
+    opt.textContent = '📁 ' + f.label;
+    sel.appendChild(opt);
+  });
+  if (cur && [...sel.options].some(o => o.value === cur)) sel.value = cur;
+}
+
 function getAddYear() {
-  return document.getElementById('photo-year-select').value || 'all';
+  return document.getElementById('photo-year-select').value || (photoFolders[0] ? photoFolders[0].id : 'none');
 }
 
 // Canvas で圧縮して data URL を返す（最大1200px・JPEG80%）
@@ -831,7 +919,7 @@ function savePhotos() {
 
 function getFlatPhotos() {
   if (currentPhotoYear === 'all') {
-    return PHOTO_YEARS.filter(y => y !== 'all').flatMap(y => photosByYear[y] || []);
+    return photoFolders.flatMap(f => photosByYear[f.id] || []);
   }
   return photosByYear[currentPhotoYear] || [];
 }
@@ -840,8 +928,9 @@ function deletePhoto(idx) {
   const flat = getFlatPhotos();
   const target = flat[idx];
   if (!target) return;
-  for (const y of PHOTO_YEARS) {
-    const arr = photosByYear[y] || [];
+  const keys = currentPhotoYear === 'all' ? photoFolders.map(f => f.id) : [currentPhotoYear];
+  for (const id of keys) {
+    const arr = photosByYear[id] || [];
     const i = arr.findIndex(p => p.src === target.src);
     if (i !== -1) { arr.splice(i, 1); break; }
   }
@@ -853,7 +942,7 @@ function deletePhoto(idx) {
 function switchPhotoYear(year) {
   currentPhotoYear = year;
   const sel = document.getElementById('photo-year-select');
-  if (year !== 'all') sel.value = year;
+  if (year !== 'all' && [...sel.options].some(o => o.value === year)) sel.value = year;
   renderYearTabs();
   renderPhotos();
 }
@@ -861,19 +950,32 @@ function switchPhotoYear(year) {
 function renderYearTabs() {
   const container = document.getElementById('year-folder-tabs');
   container.innerHTML = '';
-  PHOTO_YEARS.forEach(y => {
-    const count = y === 'all'
-      ? PHOTO_YEARS.filter(x => x !== 'all').reduce((s, x) => s + (photosByYear[x] || []).length, 0)
-      : (photosByYear[y] || []).length;
+  const allCount = photoFolders.reduce((s, f) => s + (photosByYear[f.id] || []).length, 0);
+  const allTab = document.createElement('div');
+  allTab.className = 'year-folder-tab' + (currentPhotoYear === 'all' ? ' active' : '');
+  allTab.innerHTML = '<span class="yt-icon">🗂</span><span>すべて</span><span class="yt-count">' + allCount + '枚</span>';
+  allTab.onclick = () => switchPhotoYear('all');
+  container.appendChild(allTab);
+  photoFolders.forEach(f => {
+    const count = (photosByYear[f.id] || []).length;
     const tab = document.createElement('div');
-    tab.className = 'year-folder-tab' + (currentPhotoYear === y ? ' active' : '');
+    tab.className = 'year-folder-tab' + (currentPhotoYear === f.id ? ' active' : '');
     tab.innerHTML =
-      '<span class="yt-icon">' + YEAR_ICONS[y] + '</span>' +
-      '<span>' + YEAR_LABELS[y] + '</span>' +
-      '<span class="yt-count">' + count + '枚</span>';
-    tab.onclick = () => switchPhotoYear(y);
+      '<span class="yt-icon">📁</span>' +
+      '<span>' + escHtml(f.label) + '</span>' +
+      '<span class="yt-count">' + count + '枚</span>' +
+      '<span class="yt-actions">' +
+        '<button class="yt-act-btn" onclick="renamePhotoFolder(\'' + f.id + '\',event)" title="名前変更">✏️</button>' +
+        '<button class="yt-act-btn" onclick="deletePhotoFolder(\'' + f.id + '\',event)" title="削除">🗑</button>' +
+      '</span>';
+    tab.onclick = () => switchPhotoYear(f.id);
     container.appendChild(tab);
   });
+  const addBtn = document.createElement('div');
+  addBtn.className = 'yt-add-btn';
+  addBtn.innerHTML = '<span style="font-size:1.4rem">＋</span><span>フォルダ追加</span>';
+  addBtn.onclick = addPhotoFolder;
+  container.appendChild(addBtn);
 }
 
 function renderPhotos() {
@@ -881,7 +983,8 @@ function renderPhotos() {
   grid.innerHTML = '';
   const flat = getFlatPhotos();
   if (!flat.length) {
-    const label = currentPhotoYear === 'all' ? '' : YEAR_LABELS[currentPhotoYear] + 'の';
+    const folder = photoFolders.find(f => f.id === currentPhotoYear);
+    const label = folder ? folder.label + 'の' : '';
     grid.innerHTML = '<div class="photo-empty">まだ' + label + '写真がありません。<br>上の📷ボタンから写真を追加しよう！</div>';
     return;
   }
@@ -1055,7 +1158,6 @@ function renderVideos() {
 //  メッセージ
 // ===================================================
 let messages = [];
-let selectedMsgColor = 'msg-pink';
 
 function initMessages() {
   fbOn('messages', [], val => {
@@ -1070,25 +1172,30 @@ const msgColors = {
   'msg-orange': { bg:'#ffecd4', text:'#b05a00' },
   'msg-purple': { bg:'#eedff7', text:'#7826b5' },
 };
-function selectMsgColor(el) {
-  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedMsgColor = el.dataset.color;
-}
+const senderColors = { 'パパ': 'msg-green', 'ママ': 'msg-purple', 'リホ': 'msg-pink' };
 function addMessage() {
-  const name = document.getElementById('msg-name').value.trim() || '名無し';
+  const from = document.getElementById('msg-from').value;
+  const to   = document.getElementById('msg-to').value;
   const text = document.getElementById('msg-text').value.trim();
   if (!text) { alert('メッセージを入力してください'); return; }
   const now = new Date();
   const time = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate() + ' ' +
     String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  messages.unshift({ name, text, color: selectedMsgColor, time });
+  messages.unshift({ from, to, text, color: senderColors[from] || 'msg-blue', time });
   document.getElementById('msg-text').value = '';
   fbSet('messages', messages);
   renderMessages();
 }
 function deleteMessage(i) {
   messages.splice(i, 1);
+  fbSet('messages', messages);
+  renderMessages();
+}
+function toggleLike(i, name) {
+  if (!messages[i].likes) messages[i].likes = [];
+  const pos = messages[i].likes.indexOf(name);
+  if (pos === -1) messages[i].likes.push(name);
+  else messages[i].likes.splice(pos, 1);
   fbSet('messages', messages);
   renderMessages();
 }
@@ -1101,9 +1208,18 @@ function renderMessages() {
     const card = document.createElement('div');
     card.className = 'message-card';
     card.style.background = c.bg;
+    const route = m.from && m.to ? escHtml(m.from) + ' → ' + escHtml(m.to) : escHtml(m.name || '');
+    const likes = m.likes || [];
+    const recipients = m.to === '家族' ? ['ママ','パパ','リホ'] : (m.to ? [m.to] : []);
+    const likesBtns = recipients.map(name => {
+      const on = likes.includes(name);
+      return '<button class="mc-like-btn' + (on ? ' liked' : '') + '" onclick="toggleLike(' + i + ',\'' + name + '\')">' +
+        '<span class="mc-cb">' + (on ? '✓' : '') + '</span>' + name + '</button>';
+    }).join('');
     card.innerHTML =
-      '<div class="mc-name" style="color:' + c.text + '">' + escHtml(m.name) + '</div>' +
+      '<div class="mc-route" style="color:' + c.text + '">' + route + '</div>' +
       '<div class="mc-text">' + escHtml(m.text) + '</div>' +
+      '<div class="mc-likes">' + likesBtns + '</div>' +
       '<div class="mc-time">' + m.time + '</div>' +
       '<button class="mc-del" onclick="deleteMessage(' + i + ')">🗑</button>';
     list.appendChild(card);
@@ -1173,9 +1289,100 @@ function renderTodos() {
 // ===================================================
 //  書類・PDF
 // ===================================================
-function openPdf(filename, label) {
+// ===================================================
+//  書類
+// ===================================================
+let docs = [];
+const DEFAULT_DOCS = [{ name: '資産運用方針', url: '資産運用方針.pdf', addedAt: '' }];
+
+function initDocs() {
+  fbOn('docs', null, val => {
+    if (val) {
+      docs = Array.isArray(val) ? val : Object.values(val);
+    } else {
+      docs = DEFAULT_DOCS.map(d => ({...d}));
+    }
+    renderDocs();
+  });
+}
+
+async function addDoc(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const nameInput = document.getElementById('doc-name-input');
+  const name = nameInput.value.trim() || file.name.replace(/\.pdf$/i, '');
+  const statusEl = document.getElementById('doc-add-status');
+  statusEl.textContent = '⏳ アップロード中...';
+  statusEl.style.color = '#ff9a3c';
+  try {
+    let url;
+    if (IS_CONFIGURED) {
+      const fname = 'docs/' + Date.now() + '_' + file.name;
+      const snap = await storage.ref(fname).put(file);
+      url = await snap.ref.getDownloadURL();
+    } else {
+      url = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = ev => resolve(ev.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+    const now = new Date();
+    const addedAt = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate();
+    docs.unshift({ name, url, addedAt });
+    fbSet('docs', docs);
+    renderDocs();
+    nameInput.value = '';
+    e.target.value = '';
+    statusEl.textContent = '✅ 追加しました';
+    statusEl.style.color = '#6bcb77';
+    setTimeout(() => { statusEl.textContent = ''; }, 3000);
+  } catch(err) {
+    console.error(err);
+    statusEl.textContent = '❌ アップロード失敗';
+    statusEl.style.color = '#f44';
+  }
+}
+
+function deleteDoc(i) {
+  if (!confirm('「' + docs[i].name + '」を削除しますか？')) return;
+  docs.splice(i, 1);
+  fbSet('docs', docs);
+  renderDocs();
+}
+
+function renderDocs() {
+  const list = document.getElementById('docs-list');
+  list.innerHTML = '';
+  if (!docs.length) {
+    list.innerHTML = '<div style="text-align:center;color:#bbb;padding:20px;">書類がまだありません。PDFをアップロードしてください。</div>';
+    return;
+  }
+  docs.forEach((d, i) => {
+    const item = document.createElement('div');
+    item.className = 'doc-item';
+    item.innerHTML =
+      '<div class="doc-icon">📋</div>' +
+      '<div class="doc-info">' +
+        '<div class="doc-name">' + escHtml(d.name) + '</div>' +
+        '<div class="doc-meta">PDF' + (d.addedAt ? '・' + d.addedAt : '') + '</div>' +
+      '</div>' +
+      '<button class="doc-btn" onclick="openDoc(' + i + ')">📖 開く</button>' +
+      '<button class="doc-del" onclick="deleteDoc(' + i + ')">🗑 削除</button>';
+    list.appendChild(item);
+  });
+}
+
+function openDoc(i) {
+  const d = docs[i];
+  if (!d) return;
+  openPdf(d.url, d.name);
+}
+
+function openPdf(url, label) {
   document.getElementById('pdf-viewer-label').textContent = '📄 ' + label;
-  document.getElementById('pdf-iframe').src = filename;
+  document.getElementById('pdf-iframe').src = url;
   const area = document.getElementById('pdf-viewer-area');
   area.style.display = 'block';
   area.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1191,6 +1398,7 @@ initMessages();    // メッセージ（Firebase監視開始）
 initTodos();       // やること（Firebase監視開始）
 initPhotos();      // 写真（Firebase監視開始）
 initVideos();      // 動画（Firebase監視開始）
+initDocs();        // 書類（Firebase監視開始）
 </script>
 </body>
 </html>
