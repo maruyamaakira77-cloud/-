@@ -79,11 +79,20 @@
     .docs-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
     .doc-item { display: flex; align-items: center; gap: 16px; background: #fff8f2; border-radius: 16px; padding: 16px 20px; border-left: 5px solid #e07b39; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
     .doc-item .doc-icon { font-size: 2.2rem; flex-shrink: 0; }
-    .doc-item .doc-info { flex: 1; }
+    .doc-item .doc-info { flex: 1; min-width: 0; }
     .doc-item .doc-name { font-weight: bold; font-size: 1rem; color: #333; }
-    .doc-item .doc-meta { font-size: 0.8rem; color: #aaa; margin-top: 3px; }
-    .doc-item .doc-btn { padding: 8px 18px; border: none; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; background: #e07b39; color: #fff; transition: 0.2s; white-space: nowrap; }
+    .doc-item .doc-meta { font-size: 0.8rem; color: #aaa; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .doc-item .doc-btn { padding: 8px 18px; border: none; border-radius: 50px; font-size: 0.85rem; font-weight: bold; cursor: pointer; background: #e07b39; color: #fff; transition: 0.2s; white-space: nowrap; text-decoration: none; display: inline-block; }
     .doc-item .doc-btn:hover { opacity: 0.85; }
+    .doc-item .doc-del { background: none; border: none; font-size: 1rem; cursor: pointer; opacity: 0.35; flex-shrink: 0; margin-left: 4px; }
+    .doc-item .doc-del:hover { opacity: 1; }
+    /* 書類追加フォーム */
+    .doc-add-form { background: #fff8f2; border-radius: 16px; padding: 16px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .doc-add-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .doc-add-row input { flex: 1; min-width: 160px; border: 2px solid #ddd; border-radius: 50px; padding: 10px 16px; font-size: 0.9rem; font-family: inherit; outline: none; transition: 0.2s; background: #fff; }
+    .doc-add-row input:focus { border-color: #e07b39; }
+    .doc-add-row .btn { background: #e07b39; color: #fff; white-space: nowrap; }
+    .doc-add-row .btn:hover { opacity: 0.85; }
     .pdf-viewer-wrap { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.12); background: #555; }
     .pdf-viewer-wrap iframe { display: block; width: 100%; height: 75vh; border: none; }
     .pdf-viewer-title { font-size: 1rem; font-weight: bold; color: #555; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -234,6 +243,10 @@
     .color-swatch.selected { border-color: #333; transform: scale(1.15); }
     .msg-submit { align-self: flex-end; background: var(--green); color: #fff; }
     .msg-submit:hover { opacity: 0.85; }
+    .msg-from-to { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .msg-from-to select { border: 2px solid #ddd; border-radius: 50px; padding: 8px 14px; font-family: inherit; font-size: 0.92rem; outline: none; background: #fff; transition: 0.2s; cursor: pointer; }
+    .msg-from-to select:focus { border-color: var(--green); }
+    .msg-arrow { font-size: 1.1rem; color: #aaa; font-weight: bold; flex-shrink: 0; }
     .messages-list { display: flex; flex-direction: column; gap: 14px; }
     .message-card { border-radius: 16px; padding: 16px 18px; position: relative; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
     .message-card .mc-name { font-weight: bold; font-size: 0.95rem; margin-bottom: 4px; }
@@ -399,7 +412,21 @@
       <h2>💬 メッセージボード</h2>
       <div class="msg-form">
         <div class="msg-row">
-          <input type="text" id="msg-name" placeholder="名前（例：ママ）" maxlength="20" />
+          <div class="msg-from-to">
+            <select id="msg-from">
+              <option value="パパ">👨 パパ</option>
+              <option value="ママ">👩 ママ</option>
+              <option value="子供">👦 子供</option>
+              <option value="全員">👨‍👩‍👧 全員</option>
+            </select>
+            <span class="msg-arrow">→</span>
+            <select id="msg-to">
+              <option value="全員">👨‍👩‍👧 全員へ</option>
+              <option value="パパ">👨 パパへ</option>
+              <option value="ママ">👩 ママへ</option>
+              <option value="子供">👦 子供へ</option>
+            </select>
+          </div>
           <div class="msg-color-pick">
             <span>色：</span>
             <div class="color-swatch selected" data-color="msg-pink"   style="background:#ffe0ee" onclick="selectMsgColor(this)"></div>
@@ -447,19 +474,24 @@
   <section id="tab-docs" class="tab-section">
     <div class="card">
       <h2>📄 書類・PDF</h2>
-      <div class="docs-list" id="docs-list">
 
-        <!-- 資産運用方針.pdf -->
-        <div class="doc-item">
-          <div class="doc-icon">📋</div>
-          <div class="doc-info">
-            <div class="doc-name">資産運用方針</div>
-            <div class="doc-meta">PDF・18ページ</div>
-          </div>
-          <button class="doc-btn" onclick="openPdf('資産運用方針.pdf','資産運用方針')">📖 開く</button>
+      <!-- 書類追加フォーム -->
+      <div class="doc-add-form">
+        <div class="doc-add-row">
+          <input type="text" id="doc-name-input" placeholder="書類名（例：保険証書・家のローン資料）" maxlength="40"
+                 onkeydown="if(event.key==='Enter')document.getElementById('doc-url-input').focus()" />
         </div>
-
+        <div class="doc-add-row">
+          <input type="url" id="doc-url-input" placeholder="URLを貼り付け（PDF・GoogleドライブなどのリンクOK）"
+                 onkeydown="if(event.key==='Enter')addDoc()" />
+          <button class="btn" onclick="addDoc()">＋ 追加</button>
+        </div>
+        <div id="doc-add-hint" style="font-size:0.8rem;color:#aaa;">
+          💡 PDF・Googleドライブ・Dropboxなどのリンクを貼り付けてください。PDFはページ内で直接開けます。
+        </div>
       </div>
+
+      <div class="docs-list" id="docs-list"></div>
 
       <!-- PDFビューア（クリックで展開） -->
       <div id="pdf-viewer-area" style="display:none;">
@@ -538,9 +570,9 @@
 </div>
 
 <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
 <script>
 // ============================================================
@@ -548,26 +580,35 @@
 //  console.firebase.google.com で取得した値を貼り付けてください
 // ============================================================
 const FIREBASE_CONFIG = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL:       "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey:            "AIzaSyBgOLqJL3NX5ITQQmJubW6-YJ1xEGxS4XM",
+  authDomain:        "wagaya-hp.firebaseapp.com",
+  databaseURL:       "https://wagaya-hp-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:         "wagaya-hp",
+  storageBucket:     "wagaya-hp.firebasestorage.app",
+  messagingSenderId: "686073977550",
+  appId:             "1:686073977550:web:9f1361ff3ac80ae2708e9f"
 };
 // ============================================================
 
 const IS_CONFIGURED = FIREBASE_CONFIG.apiKey !== 'YOUR_API_KEY';
 let db, storage, fbRef;
+let _firebaseReady = false;
 
 if (IS_CONFIGURED) {
-  firebase.initializeApp(FIREBASE_CONFIG);
-  db      = firebase.database();
-  storage = firebase.storage();
-  fbRef   = (path) => db.ref('fam/' + path);
-} else {
-  // 未設定の場合はセットアップバナーを表示
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+    db      = firebase.database();
+    storage = firebase.storage();
+    fbRef   = (path) => db.ref('fam/' + path);
+    _firebaseReady = true;
+  } catch(e) {
+    console.warn('Firebase初期化エラー:', e);
+    // 初期化に失敗した場合はlocalStorageモードで動作
+  }
+}
+
+if (!_firebaseReady) {
+  // Firebase未設定 or 読み込み失敗時はセットアップバナーを表示
   window.addEventListener('DOMContentLoaded', () => {
     const banner = document.createElement('div');
     banner.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:#ff9a3c;color:#fff;padding:14px 20px;font-size:0.9rem;text-align:center;z-index:9999;font-weight:bold;';
@@ -584,14 +625,33 @@ function escHtml(s) {
 // Firebase未設定時のフォールバック用localStorage
 function lsSave(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e){} }
 function lsLoad(key, def) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch(e){ return def; } }
-// Firebase or localStorage に書き込み
+// Firebase or localStorage に書き込み（パス全体を置き換え）
 function fbSet(path, val) {
-  if (IS_CONFIGURED) fbRef(path).set(val);
+  if (_firebaseReady) fbRef(path).set(val);
   else lsSave(path, val);
+}
+// Firebase or localStorage の特定キーだけ更新（他のキーは消えない）
+function fbUpdate(path, updates) {
+  if (_firebaseReady) {
+    fbRef(path).update(updates);
+  } else {
+    const existing = lsLoad(path, {});
+    lsSave(path, Object.assign({}, existing, updates));
+  }
+}
+// Firebase or localStorage の特定キーだけ削除（他のキーは消えない）
+function fbDeleteKey(path, key) {
+  if (_firebaseReady) {
+    fbRef(path + '/' + key).set(null);
+  } else {
+    const existing = lsLoad(path, {});
+    delete existing[key];
+    lsSave(path, existing);
+  }
 }
 // Firebase or localStorage から読み込み（コールバック形式）
 function fbOn(path, def, cb) {
-  if (IS_CONFIGURED) {
+  if (_firebaseReady) {
     fbRef(path).on('value', snap => cb(snap.val() ?? def));
   } else {
     cb(lsLoad(path, def));
@@ -618,10 +678,13 @@ function initCalendar() {
   calYear = now.getFullYear();
   calMonth = now.getMonth();
 
-  // ===== Googleカレンダーから同期した予定 (最終更新: 2026年4月1日) =====
+  // ===== Googleカレンダーから同期した予定 (最終更新: 2026年4月5日) =====
   const gcalEvents = {
+    "2026-04-15": [{ title: "🦷リホ", color: "ev-blue" }],
+    "2026-04-20": [{ title: "ウェルシアで買い物", color: "ev-orange" }],
     "2026-04-25": [{ title: "歯科🦷", color: "ev-blue" }],
     "2026-04-29": [{ title: "昭和の日 🎌", color: "ev-green" }],
+    "2026-04-30": [{ title: "サティ１０％OFF", color: "ev-green" }],
     "2026-05-03": [{ title: "憲法記念日 🎌", color: "ev-green" }],
     "2026-05-04": [{ title: "みどりの日 🎌", color: "ev-green" }],
     "2026-05-05": [{ title: "こどもの日 🎌", color: "ev-green" }],
@@ -791,7 +854,7 @@ function addPhotoFolder() {
     photoFolders.push({id, label: name});
     photosByYear[id] = [];
     fbSet('photoFolders', photoFolders);
-    savePhotos();
+    fbUpdate('photos', { [id]: [] }); // 新フォルダ分だけ追加（既存データは消えない）
     updatePhotoYearSelect();
     renderYearTabs();
   });
@@ -814,7 +877,7 @@ function deletePhotoFolder(id) {
   delete photosByYear[id];
   if (currentPhotoYear === id) currentPhotoYear = 'all';
   fbSet('photoFolders', photoFolders);
-  savePhotos();
+  fbDeleteKey('photos', id); // そのフォルダのキーだけ削除（他フォルダの写真は消えない）
   updatePhotoYearSelect();
   renderYearTabs();
   renderPhotos();
@@ -866,7 +929,7 @@ async function addPhotos(e) {
     try {
       const compressed = await compressImage(file);
       let src;
-      if (IS_CONFIGURED) {
+      if (_firebaseReady) {
         // Firebase Storage にアップロードして永続URLを取得
         const blob = await (await fetch(compressed)).blob();
         const fname = year + '_' + Date.now() + '_' + Math.random().toString(36).substr(2,6) + '.jpg';
@@ -885,15 +948,21 @@ async function addPhotos(e) {
     }
   }
   e.target.value = '';
-  savePhotos();
+  savePhotos(year); // 追加したフォルダだけ更新
   const msg = done + '枚を追加しました！' + (failed ? '（' + failed + '枚失敗）' : '');
   setStatus('✅ ' + msg, '#6bcb77');
   renderYearTabs();
   renderPhotos();
 }
 
-function savePhotos() {
-  fbSet('photos', photosByYear);
+function savePhotos(changedId) {
+  // changedId が指定された場合はそのフォルダだけ更新（他フォルダの写真は消えない）
+  // 指定なしの場合は全体を保存
+  if (changedId !== undefined) {
+    fbUpdate('photos', { [changedId]: photosByYear[changedId] || [] });
+  } else {
+    fbSet('photos', photosByYear);
+  }
 }
 
 function getFlatPhotos() {
@@ -907,12 +976,13 @@ function deletePhoto(idx) {
   const flat = getFlatPhotos();
   const target = flat[idx];
   if (!target) return;
+  let changedId;
   for (const id of getPhotoFolderIds()) {
     const arr = photosByYear[id] || [];
     const i = arr.findIndex(p => p.src === target.src);
-    if (i !== -1) { arr.splice(i, 1); break; }
+    if (i !== -1) { arr.splice(i, 1); changedId = id; break; }
   }
-  savePhotos();
+  savePhotos(changedId); // 削除したフォルダだけ更新
   renderYearTabs();
   renderPhotos();
 }
@@ -1045,7 +1115,7 @@ function addVideoFolder() {
     videoFolders.push({id, label: name});
     videosByYear[id] = [];
     fbSet('videoFolders', videoFolders);
-    fbSet('videos', videosByYear);
+    fbUpdate('videos', { [id]: [] }); // 新フォルダ分だけ追加（既存データは消えない）
     updateVideoYearSelect();
     renderVideoYearTabs();
   });
@@ -1068,7 +1138,7 @@ function deleteVideoFolder(id) {
   delete videosByYear[id];
   if (currentVideoYear === id) currentVideoYear = 'all';
   fbSet('videoFolders', videoFolders);
-  fbSet('videos', videosByYear);
+  fbDeleteKey('videos', id); // そのフォルダのキーだけ削除（他フォルダの動画は消えない）
   updateVideoYearSelect();
   renderVideoYearTabs();
   renderVideos();
@@ -1112,18 +1182,19 @@ function addVideo() {
   videosByYear[year].unshift({ url, title, ytId, nicoId, isDirect });
   document.getElementById('video-url-input').value = '';
   document.getElementById('video-title-input').value = '';
-  fbSet('videos', videosByYear);
+  fbUpdate('videos', { [year]: videosByYear[year] }); // 追加したフォルダだけ更新
   renderVideoYearTabs();
   renderVideos();
 }
 
 function deleteVideo(urlToDelete) {
+  let changedId;
   for (const id of getVideoFolderIds()) {
     const arr = videosByYear[id] || [];
     const idx = arr.findIndex(v => v.url === urlToDelete);
-    if (idx !== -1) { arr.splice(idx, 1); break; }
+    if (idx !== -1) { arr.splice(idx, 1); changedId = id; break; }
   }
-  fbSet('videos', videosByYear);
+  if (changedId) fbUpdate('videos', { [changedId]: videosByYear[changedId] || [] }); // 削除したフォルダだけ更新
   renderVideoYearTabs();
   renderVideos();
 }
@@ -1231,13 +1302,14 @@ function selectMsgColor(el) {
   selectedMsgColor = el.dataset.color;
 }
 function addMessage() {
-  const name = document.getElementById('msg-name').value.trim() || '名無し';
+  const from = document.getElementById('msg-from').value;
+  const to   = document.getElementById('msg-to').value;
   const text = document.getElementById('msg-text').value.trim();
   if (!text) { alert('メッセージを入力してください'); return; }
   const now = new Date();
   const time = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate() + ' ' +
     String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  messages.unshift({ name, text, color: selectedMsgColor, time });
+  messages.unshift({ from, to, text, color: selectedMsgColor, time });
   document.getElementById('msg-text').value = '';
   fbSet('messages', messages);
   renderMessages();
@@ -1247,6 +1319,8 @@ function deleteMessage(i) {
   fbSet('messages', messages);
   renderMessages();
 }
+const MEMBER_ICON = { 'パパ':'👨', 'ママ':'👩', '子供':'👦', '全員':'👨‍👩‍👧' };
+
 function renderMessages() {
   const list = document.getElementById('messages-list');
   list.innerHTML = '';
@@ -1256,8 +1330,17 @@ function renderMessages() {
     const card = document.createElement('div');
     card.className = 'message-card';
     card.style.background = c.bg;
+    // 新形式（from/to）と旧形式（name）の両方に対応
+    let header;
+    if (m.from && m.to) {
+      const fi = MEMBER_ICON[m.from] || '';
+      const ti = MEMBER_ICON[m.to]   || '';
+      header = fi + ' ' + escHtml(m.from) + ' → ' + ti + ' ' + escHtml(m.to) + 'へ';
+    } else {
+      header = escHtml(m.name || '');
+    }
     card.innerHTML =
-      '<div class="mc-name" style="color:' + c.text + '">' + escHtml(m.name) + '</div>' +
+      '<div class="mc-name" style="color:' + c.text + '">' + header + '</div>' +
       '<div class="mc-text">' + escHtml(m.text) + '</div>' +
       '<div class="mc-time">' + m.time + '</div>' +
       '<button class="mc-del" onclick="deleteMessage(' + i + ')">🗑</button>';
@@ -1326,11 +1409,91 @@ function renderTodos() {
 }
 
 // ===================================================
-//  書類・PDF
+//  書類・PDF（動的追加・削除対応）
 // ===================================================
-function openPdf(filename, label) {
+
+let docs = []; // Firebase で管理するユーザー追加書類
+
+function initDocs() {
+  fbOn('docs', [], val => {
+    docs = Array.isArray(val) ? val : (val ? Object.values(val) : []);
+    renderDocs();
+  });
+}
+
+function addDoc() {
+  const url  = document.getElementById('doc-url-input').value.trim();
+  const name = document.getElementById('doc-name-input').value.trim() || '書類';
+  if (!url) { alert('URLを入力してください'); return; }
+  const isPdf = /\.pdf(\?.*)?$/i.test(url);
+  docs.unshift({ url, name, isPdf });
+  document.getElementById('doc-url-input').value  = '';
+  document.getElementById('doc-name-input').value = '';
+  fbSet('docs', docs);
+  renderDocs();
+}
+
+function deleteDoc(i) {
+  if (!confirm('「' + docs[i].name + '」を削除しますか？')) return;
+  docs.splice(i, 1);
+  fbSet('docs', docs);
+  renderDocs();
+}
+
+function renderDocs() {
+  const list = document.getElementById('docs-list');
+  list.innerHTML = '';
+
+  // ユーザー追加書類（削除ボタン付き）
+  if (docs.length === 0) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'text-align:center;color:#bbb;padding:16px;font-size:0.95rem;';
+    empty.textContent = '＋ 上のフォームからURLを貼り付けて書類を追加しよう！';
+    list.appendChild(empty);
+    return;
+  }
+  docs.forEach((d, i) => {
+    const item = document.createElement('div');
+    item.className = 'doc-item';
+    const shortUrl = d.url.length > 55 ? d.url.slice(0, 55) + '…' : d.url;
+
+    // 開くボタン：PDFならページ内ビューア、それ以外は新しいタブ
+    let openEl;
+    if (d.isPdf) {
+      openEl = document.createElement('button');
+      openEl.className = 'doc-btn';
+      openEl.textContent = '📖 開く';
+      openEl.onclick = () => openPdf(d.url, d.name);
+    } else {
+      openEl = document.createElement('a');
+      openEl.className = 'doc-btn';
+      openEl.href = d.url;
+      openEl.target = '_blank';
+      openEl.rel = 'noopener noreferrer';
+      openEl.textContent = '🔗 開く';
+    }
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'doc-del';
+    delBtn.title = '削除';
+    delBtn.textContent = '🗑';
+    delBtn.onclick = () => deleteDoc(i);
+
+    item.innerHTML =
+      '<div class="doc-icon">📄</div>' +
+      '<div class="doc-info">' +
+        '<div class="doc-name">' + escHtml(d.name) + '</div>' +
+        '<div class="doc-meta">' + escHtml(shortUrl) + '</div>' +
+      '</div>';
+    item.appendChild(openEl);
+    item.appendChild(delBtn);
+    list.appendChild(item);
+  });
+}
+
+function openPdf(url, label) {
   document.getElementById('pdf-viewer-label').textContent = '📄 ' + label;
-  document.getElementById('pdf-iframe').src = filename;
+  document.getElementById('pdf-iframe').src = url;
   const area = document.getElementById('pdf-viewer-area');
   area.style.display = 'block';
   area.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1376,6 +1539,7 @@ initMessages();    // メッセージ（Firebase監視開始）
 initTodos();       // やること（Firebase監視開始）
 initPhotos();      // 写真（Firebase監視開始）
 initVideos();      // 動画（Firebase監視開始）
+initDocs();        // 書類（Firebase監視開始）
 </script>
 </body>
 </html>
